@@ -7,6 +7,10 @@ const adminRoutes = require("./routes/adminAuth");
 const pdfRoutes = require("./routes/pdfRoutes");
 
 const app = express();
+const path = require("path");
+
+// Serve uploaded PDFs
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(cors());
 app.use(express.json());

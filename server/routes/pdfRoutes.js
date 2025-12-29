@@ -17,11 +17,12 @@ const upload = multer({ storage });
 router.post("/upload", auth, upload.single("pdf"), async (req, res) => {
 const pdf = new Pdf({
   title: req.body.title,
-  course: req.body.course.toUpperCase(), // 🔥
+  course: req.body.course.toUpperCase(),
   semester: Number(req.body.semester),
   subject: req.body.subject,
-  fileUrl: req.file.path
+  fileUrl: req.file.path.replace("\\", "/") // Windows fix
 });
+
 
   await pdf.save();
   res.json({ message: "PDF uploaded successfully" });
@@ -30,19 +31,22 @@ const pdf = new Pdf({
 // PUBLIC fetch
 router.get("/", async (req, res) => {
   try {
-    const { course, semester } = req.query;
+    const course = req.query.course?.toUpperCase();
+    const semester = Number(req.query.semester);
 
-    const pdfs = await Pdf.find({
-      course: course.toUpperCase(),   // 🔥 normalize
-      semester: Number(semester)
-    });
+    if (!course || !semester) {
+      return res.status(400).json({ message: "Missing course or semester" });
+    }
+
+    const pdfs = await Pdf.find({ course, semester });
 
     res.json(pdfs);
   } catch (err) {
-    console.error("Fetch PDFs error:", err);
-    res.status(500).json({ message: "Failed to fetch PDFs" });
+    console.error("PDF fetch failed:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 // ADMIN delete
 router.delete("/:id", auth, async (req, res) => {
