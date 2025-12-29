@@ -15,13 +15,13 @@ const upload = multer({ storage });
 
 // ADMIN upload
 router.post("/upload", auth, upload.single("pdf"), async (req, res) => {
-  const pdf = new Pdf({
-    title: req.body.title,
-    course: req.body.course,
-    semester: req.body.semester,
-    subject: req.body.subject,
-    fileUrl: req.file.path
-  });
+const pdf = new Pdf({
+  title: req.body.title,
+  course: req.body.course.toUpperCase(), // 🔥
+  semester: Number(req.body.semester),
+  subject: req.body.subject,
+  fileUrl: req.file.path
+});
 
   await pdf.save();
   res.json({ message: "PDF uploaded successfully" });
@@ -29,9 +29,19 @@ router.post("/upload", auth, upload.single("pdf"), async (req, res) => {
 
 // PUBLIC fetch
 router.get("/", async (req, res) => {
-  const { course, semester } = req.query;
-  const pdfs = await Pdf.find({ course, semester });
-  res.json(pdfs);
+  try {
+    const { course, semester } = req.query;
+
+    const pdfs = await Pdf.find({
+      course: course.toUpperCase(),   // 🔥 normalize
+      semester: Number(semester)
+    });
+
+    res.json(pdfs);
+  } catch (err) {
+    console.error("Fetch PDFs error:", err);
+    res.status(500).json({ message: "Failed to fetch PDFs" });
+  }
 });
 
 // ADMIN delete
