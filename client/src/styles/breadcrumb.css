@@ -1,0 +1,32 @@
+.breadcrumb {
+  padding: 10px 30px;
+  font-size: 14px;
+  background: var(--bg-secondary);
+  color: var(--text-color);
+}
+
+.breadcrumb a {
+  text-decoration: none;
+  color: var(--text-color);
+  transition: opacity 0.2s ease;
+}
+
+.breadcrumb a:hover {
+  opacity: 0.7;
+}
+
+/* ===== Animation ===== */
+.breadcrumb-animate {
+  animation: breadcrumbFade 0.4s ease;
+}
+
+@keyframes breadcrumbFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

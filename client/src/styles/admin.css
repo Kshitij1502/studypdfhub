@@ -1,0 +1,76 @@
+/* ===== Dashboard Layout ===== */
+.dashboard-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+}
+
+/* ===== Header ===== */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ===== Filters ===== */
+.filters {
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+}
+
+.filters select {
+  padding: 6px 10px;
+}
+
+/* ===== Upload Card ===== */
+.upload-card {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.upload-card input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.upload-card button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+/* ===== PDF List ===== */
+.pdf-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.delete-btn {
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}

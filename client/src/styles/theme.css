@@ -1,0 +1,22 @@
+:root {
+  --bg-main: #f4f6f8;
+  --bg-secondary: #ffffff;
+  --text-color: #222;
+
+  --card-bg: #ffffff;
+  --card-text: #222;
+}
+
+[data-theme="dark"] {
+  --bg-main: #121212;
+  --bg-secondary: #1e1e1e;
+  --text-color: #f5f5f5;
+
+  --card-bg: #1f1f1f;
+  --card-text: #f5f5f5;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-color);
+}

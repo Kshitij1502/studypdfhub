@@ -1,0 +1,265 @@
+/* =========================
+   BASE LAYOUT
+========================= */
+
+.page-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+/* =========================
+   HERO SECTION
+========================= */
+
+.hero {
+  text-align: center;
+  margin: 60px auto 50px;
+  max-width: 900px;
+}
+
+.hero h1 {
+  font-size: 44px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  font-size: 18px;
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+/* =========================
+   GRID SYSTEM
+========================= */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.pdf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+  background: var(--card-bg);
+  color: var(--card-text);
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 14px 35px rgba(0,0,0,0.3);
+}
+
+/* Semester card */
+.semester-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+}
+
+.semester-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.semester-subtext {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* PDF card */
+.pdf-card {
+  background: var(--card-bg);
+  color: var(--card-text);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* =========================
+   FEATURE PILLS (HOME)
+========================= */
+
+.feature-grid {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 35px 0 55px;
+  flex-wrap: wrap;
+}
+
+.feature {
+  background: var(--card-bg);
+  color: var(--card-text);
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background: #2980b9;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+
+.back-btn:hover {
+  background: var(--bg-secondary);
+}
+
+/* =========================
+   PAGE TRANSITION
+========================= */
+
+.page-animate {
+  animation: fadeSlide 0.4s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   SKELETON LOADER
+========================= */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #2a2a2a 25%,
+    #3a3a3a 37%,
+    #2a2a2a 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border-radius: 12px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skeleton-card {
+  height: 180px;
+}
+
+/* ===== CONTACT PAGE ===== */
+
+.page-subtitle {
+  text-align: center;
+  opacity: 0.7;
+  margin-bottom: 30px;
+}
+
+.contact-form {
+  max-width: 520px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-row {
+  display: flex;
+  gap: 12px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: var(--bg-secondary);
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.contact-form textarea {
+  resize: none;
+}
+
+.primary-btn {
+  align-self: flex-end;
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  background: #3498db;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.primary-btn:hover {
+  background: #2980b9;
+}
+
+/* ===== MOBILE FIX ===== */
+@media (max-width: 600px) {
+  .contact-row {
+    flex-direction: column;
+  }
+
+  .primary-btn {
+    width: 100%;
+    align-self: center;
+  }
+}
