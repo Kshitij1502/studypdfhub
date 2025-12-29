@@ -6,6 +6,8 @@ import Breadcrumb from "./components/Breadcrumb";
 
 import Home from "./pages/Home";
 import SemesterPage from "./pages/SemesterPage";
+import SubjectPage from "./pages/SubjectPage";
+import UnitPage from "./pages/UnitPage";
 import PdfListPage from "./pages/PdfListPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -36,25 +38,41 @@ useEffect(() => {
       />
 
       <Breadcrumb />
+<Routes>
+  <Route path="/" element={<Home />} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/course/:course" element={<SemesterPage />} />
-        <Route path="/course/:course/semester/:semester" element={<PdfListPage />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-<Route path="/disclaimer" element={<Disclaimer />} />
-<Route path="/about" element={<About />} />
+  <Route path="/course/:course" element={<SemesterPage />} />
 
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+  <Route
+    path="/course/:course/semester/:semester"
+    element={<SubjectPage />}
+  />
+
+  <Route
+    path="/course/:course/semester/:semester/subject/:subject"
+    element={<UnitPage />}
+  />
+
+  <Route
+    path="/course/:course/semester/:semester/subject/:subject/unit/:unit"
+    element={<PdfListPage />}
+  />
+
+  <Route path="/admin/login" element={<AdminLogin />} />
+
+  <Route
+    path="/admin/dashboard"
+    element={
+      <ProtectedRoute>
+        <AdminDashboard />
+      </ProtectedRoute>
+    }
+  />
+
+  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+  <Route path="/disclaimer" element={<Disclaimer />} />
+  <Route path="/about" element={<About />} />
+</Routes>
       <Footer />
     </BrowserRouter>
   );

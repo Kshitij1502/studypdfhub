@@ -5,11 +5,15 @@ const pdfSchema = new mongoose.Schema({
   course: String,
   semester: Number,
   subject: String,
+  unit: {
+    type: Number,
+    required: false   // 🔴 REQUIRED
+  },
   fileUrl: String,
   uploadedAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model("Pdf", pdfSchema);

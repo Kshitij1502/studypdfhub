@@ -10,12 +10,14 @@ const AdminDashboard = () => {
   const [search, setSearch] = useState("");
 
   const [form, setForm] = useState({
-    title: "",
-    course: "BCA",
-    semester: 1,
-    subject: "",
-    pdf: null,
-  });
+  title: "",
+  course: "BCA",
+  semester: 1,
+  subject: "",
+  unit: 1,          // ✅ NEW
+  pdf: null
+});
+
 
   /* =========================
      LOGOUT
@@ -59,7 +61,8 @@ const handleUpload = async (e) => {
   data.append("title", form.title);
   data.append("course", form.course);
   data.append("semester", form.semester);
-  data.append("subject", form.subject);
+  data.append("subject", form.subject.toLowerCase());
+data.append("unit", form.unit);
   data.append("pdf", form.pdf);
 
   try {
@@ -133,7 +136,7 @@ const handleUpload = async (e) => {
       <div className="upload-card">
         <form onSubmit={handleUpload}>
           <input
-            placeholder="Title"
+            placeholder="PdfName"
             required
             onChange={(e) =>
               setForm({ ...form, title: e.target.value })
@@ -146,6 +149,20 @@ const handleUpload = async (e) => {
               setForm({ ...form, subject: e.target.value })
             }
           />
+          <select
+  value={form.unit}
+  onChange={(e) =>
+    setForm({ ...form, unit: Number(e.target.value) })
+  }
+  required
+>
+  <option value={1}>Unit 1</option>
+  <option value={2}>Unit 2</option>
+  <option value={3}>Unit 3</option>
+  <option value={4}>Unit 4</option>
+  <option value={5}>Unit 5</option>
+</select>
+
           <input
             type="file"
             accept="application/pdf"
