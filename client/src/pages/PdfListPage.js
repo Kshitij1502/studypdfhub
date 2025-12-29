@@ -30,20 +30,15 @@ const PdfListPage = () => {
 
   return (
     <div className="page-container page-animate">
-      {/* HERO */}
       <div className="hero">
-        <h1>
-          {course.toUpperCase()} – Semester {semester}
-        </h1>
+        <h1>{course.toUpperCase()} – Semester {semester}</h1>
         <p>Available study materials</p>
       </div>
 
-      {/* BACK */}
       <button className="back-btn" onClick={() => navigate(-1)}>
         ← Back
       </button>
 
-      {/* LOADING SKELETON */}
       {loading && (
         <>
           <div className="skeleton skeleton-card"></div>
@@ -52,10 +47,8 @@ const PdfListPage = () => {
         </>
       )}
 
-      {/* EMPTY */}
       {!loading && pdfs.length === 0 && <p>No PDFs available.</p>}
 
-      {/* PDF LIST */}
       <div className="pdf-grid">
         {pdfs.map((pdf) => (
           <div className="pdf-card" key={pdf._id}>
@@ -65,7 +58,7 @@ const PdfListPage = () => {
             </div>
 
             <a
-              href={`${process.env.REACT_APP_API_URL}/${pdf.fileUrl}`}
+              href={`${process.env.REACT_APP_BACKEND_URL}/${pdf.fileUrl}`}
               target="_blank"
               rel="noopener noreferrer"
             >
