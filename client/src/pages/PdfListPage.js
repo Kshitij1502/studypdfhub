@@ -58,10 +58,11 @@ const PdfListPage = () => {
             </div>
 
             <a
-              href={`${process.env.REACT_APP_BACKEND_URL}/${pdf.fileUrl}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+  href={`https://studypdfhub-production.up.railway.app/${pdf.fileUrl}`}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+
               <button className="primary-btn">Download</button>
             </a>
           </div>
