@@ -7,7 +7,10 @@ const Navbar = ({ toggleTheme, darkMode }) => {
     <nav className="navbar">
       <Link to="/" className="nav-logo">📚 StudyPDF Hub</Link>
 
-      {/* ❌ REMOVE CONTACT LINK */}
+     <Link to="/contact" className="nav-link">
+  Contact
+</Link>
+
 
       <button className="theme-btn" onClick={toggleTheme}>
         {darkMode ? "☀ Light" : "🌙 Dark"}

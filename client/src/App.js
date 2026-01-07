@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Disclaimer from "./pages/Disclaimer";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
 import "./styles/theme.css";
 
@@ -68,7 +69,7 @@ useEffect(() => {
       </ProtectedRoute>
     }
   />
-
+  <Route path="/contact" element={<Contact />} />
   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
   <Route path="/disclaimer" element={<Disclaimer />} />
   <Route path="/about" element={<About />} />
