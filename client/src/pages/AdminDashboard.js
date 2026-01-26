@@ -198,7 +198,7 @@ data.append("unit", form.unit);
             </div>
             <div>
               <a
-                href={`http://localhost:5000/${pdf.fileUrl}`}
+                href={`https://studypdfhub-production.up.railway.app/${pdf.fileUrl}`}
                 target="_blank"
                 rel="noreferrer"
               >
