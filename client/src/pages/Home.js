@@ -14,7 +14,7 @@ const Home = () => {
         <title>BCA & MCA Study PDFs | Free Semester-wise Notes</title>
         <meta
           name="description"
-          content="Download free BCA and MCA semester-wise PDFs, notes, and study materials. Simple, fast, and student-friendly."
+          content="Download Free BCA and MCA semester-wise PDFs, notes, and study materials. Simple, fast, and student-friendly."
         />
         <meta
           name="keywords"
