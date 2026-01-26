@@ -98,6 +98,9 @@ const query = {};
 if (course) query.course = course;
 if (semester) query.semester = Number(semester);
 if (subject) query.subject = subject.toLowerCase();
+if (subject) {
+  query.subject = new RegExp(`^${subject}$`, "i"); // case-insensitive
+}
 
 // ✅ only filter unit IF provided
 if (unit !== undefined) query.unit = Number(unit);
