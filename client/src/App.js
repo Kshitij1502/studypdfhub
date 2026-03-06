@@ -55,12 +55,7 @@ const AppContent = ({ darkMode, setDarkMode }) => {
     const checkSystemStatus = async () => {
       const requestConfig = {
         timeout: 5000,
-        params: { t: Date.now() },
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0"
-        }
+        params: { t: Date.now() }
       };
 
       const [systemStatusResult, backendHealthResult] = await Promise.allSettled([
