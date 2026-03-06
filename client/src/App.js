@@ -22,6 +22,9 @@ import API from "./services/api";
 import SYSTEM_API from "./services/systemApi";
 import "./styles/theme.css";
 
+const FORCE_MAINTENANCE_UNTIL = "2026-04-07T23:59:59+05:30";
+const FORCE_MAINTENANCE_MODE = Date.now() < new Date(FORCE_MAINTENANCE_UNTIL).getTime();
+
 const AppContent = ({ darkMode, setDarkMode }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
@@ -31,6 +34,13 @@ const AppContent = ({ darkMode, setDarkMode }) => {
   const [healthCheckDone, setHealthCheckDone] = useState(false);
 
   useEffect(() => {
+    if (FORCE_MAINTENANCE_MODE && !isAdminRoute) {
+      setIsBackendHealthy(false);
+      setIsMaintenanceMode(true);
+      setHealthCheckDone(true);
+      return;
+    }
+
     let isMounted = true;
 
     const checkSystemStatus = async () => {
@@ -62,7 +72,11 @@ const AppContent = ({ darkMode, setDarkMode }) => {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [isAdminRoute]);
+
+  if (FORCE_MAINTENANCE_MODE && !isAdminRoute) {
+    return <MaintenancePage />;
+  }
 
   if (healthCheckDone && !isAdminRoute && (!isBackendHealthy || isMaintenanceMode)) {
     return <MaintenancePage />;
