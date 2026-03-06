@@ -1,8 +1,13 @@
 import axios from "axios";
 
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL ||
+  (window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "https://studypdfhub-production.up.railway.app/api");
+
 const API = axios.create({
-  /* baseURL: "http://localhost:5000/api" */
-  baseURL: "https://studypdfhub-production.up.railway.app/api"
+  baseURL: API_BASE_URL
 });
 
 API.interceptors.request.use((config) => {

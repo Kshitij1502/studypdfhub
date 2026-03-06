@@ -10,7 +10,74 @@
 .dashboard-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.dashboard-header-actions {
+  display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+.mode-toggle-card {
+  background: #f3f8ff;
+  border: 1px solid #d6e5ff;
+  border-radius: 10px;
+  padding: 8px;
+  min-width: 240px;
+}
+
+.mode-status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.mode-status.live {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.mode-status.maintenance {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.mode-toggle-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.mode-btn {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1f2937;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.mode-btn.active.live {
+  background: #22c55e;
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+.mode-btn.active.maintenance {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.mode-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .logout-btn {
@@ -41,7 +108,8 @@
   margin-bottom: 30px;
 }
 
-.upload-card input {
+.upload-card input,
+.upload-card select {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
@@ -53,6 +121,14 @@
   border: none;
   padding: 8px 16px;
   border-radius: 5px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
 /* ===== PDF List ===== */
@@ -73,4 +149,21 @@
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+  }
+
+  .dashboard-header-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mode-toggle-card {
+    width: 100%;
+    min-width: 0;
+  }
 }

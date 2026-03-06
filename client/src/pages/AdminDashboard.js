@@ -8,84 +8,101 @@ const AdminDashboard = () => {
 
   const [pdfs, setPdfs] = useState([]);
   const [search, setSearch] = useState("");
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [modeLoading, setModeLoading] = useState(false);
 
   const [form, setForm] = useState({
-  title: "",
-  course: "BCA",
-  semester: 1,
-  subject: "",
-  unit: 1,          // ✅ NEW
-  pdf: null
-});
+    title: "",
+    course: "BCA",
+    semester: 1,
+    subject: "",
+    unit: 1,
+    pdf: null
+  });
 
-
-  /* =========================
-     LOGOUT
-  ========================= */
   const handleLogout = useCallback(() => {
-  localStorage.removeItem("token");
-  navigate("/admin/login");
-}, [navigate]);
+    localStorage.removeItem("token");
+    navigate("/admin/login");
+  }, [navigate]);
 
-
-  /* =========================
-     FETCH PDFs
-  ========================= */
   const fetchPdfs = useCallback(async () => {
-  try {
-    const res = await API.get(
-      `/pdfs?course=${form.course}&semester=${form.semester}`
-    );
-    setPdfs(res.data);
-  } catch (err) {
-    if (err.response?.status === 401) {
-      alert("Unauthorized. Login again.");
-      handleLogout();
+    try {
+      const res = await API.get(`/pdfs?course=${form.course}&semester=${form.semester}`);
+      setPdfs(res.data);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        alert("Unauthorized. Login again.");
+        handleLogout();
+      }
     }
-  }
-}, [form.course, form.semester, handleLogout]); // ✅ handleLogout removed
+  }, [form.course, form.semester, handleLogout]);
 
-
+  const fetchSystemMode = useCallback(async () => {
+    try {
+      const res = await API.get("/system/status");
+      setMaintenanceMode(Boolean(res.data?.maintenanceMode));
+    } catch (err) {
+      console.error("Failed to fetch system mode", err);
+    }
+  }, []);
 
   useEffect(() => {
     fetchPdfs();
   }, [fetchPdfs]);
 
-  /* =========================
-     UPLOAD PDF
-  ========================= */
-const handleUpload = async (e) => {
-  e.preventDefault();
+  useEffect(() => {
+    fetchSystemMode();
+  }, [fetchSystemMode]);
 
-  const data = new FormData();
-  data.append("title", form.title);
-  data.append("course", form.course);
-  data.append("semester", form.semester);
-  data.append("subject", form.subject.toLowerCase());
-data.append("unit", form.unit);
-  data.append("pdf", form.pdf);
+  const handleToggleMode = async (nextMode) => {
+    try {
+      setModeLoading(true);
+      const res = await API.put("/system/maintenance", {
+        maintenanceMode: nextMode
+      });
 
-  try {
-    await API.post("/pdfs/upload", data); // 👈 NO HEADERS
-    alert("PDF uploaded successfully");
-    fetchPdfs();
-  } catch (err) {
-    if (err.response?.status === 401) {
-      alert("Session expired. Please login again.");
-      handleLogout();
-    } else {
-      alert("Upload failed. Try again.");
-      console.error(err);
+      setMaintenanceMode(Boolean(res.data?.maintenanceMode));
+      alert(nextMode ? "Maintenance mode is ON" : "Live mode is ON");
+    } catch (err) {
+      if (err.response?.status === 401) {
+        alert("Session expired. Login again.");
+        handleLogout();
+      } else if (err.response?.status === 403) {
+        alert("Only admin can change mode.");
+      } else {
+        alert("Failed to change mode.");
+      }
+    } finally {
+      setModeLoading(false);
     }
-  }
-};
+  };
 
+  const handleUpload = async (e) => {
+    e.preventDefault();
 
+    const data = new FormData();
+    data.append("title", form.title);
+    data.append("course", form.course);
+    data.append("semester", form.semester);
+    data.append("subject", form.subject.toLowerCase());
+    data.append("unit", form.unit);
+    data.append("pdf", form.pdf);
 
+    try {
+      await API.post("/pdfs/upload", data);
+      alert("PDF uploaded successfully");
+      fetchPdfs();
+    } catch (err) {
+      if (err.response?.status === 401) {
+        alert("Session expired. Please login again.");
+        handleLogout();
+      } else {
+        alert("Upload failed. Try again.");
+        console.error(err);
+      }
+    }
+  };
 
-  /* =========================
-     DELETE PDF
-  ========================= */
   const deletePdf = async (id) => {
     if (!window.confirm("Delete this PDF?")) return;
 
@@ -103,17 +120,42 @@ data.append("unit", form.unit);
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h2>Admin Dashboard</h2>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
+
+        <div className="dashboard-header-actions">
+          <div className="mode-toggle-card">
+            <span className={`mode-status ${maintenanceMode ? "maintenance" : "live"}`}>
+              {maintenanceMode ? "Maintenance" : "Live"}
+            </span>
+            <div className="mode-toggle-buttons">
+              <button
+                type="button"
+                className={`mode-btn live ${!maintenanceMode ? "active" : ""}`}
+                onClick={() => handleToggleMode(false)}
+                disabled={modeLoading}
+              >
+                Live
+              </button>
+              <button
+                type="button"
+                className={`mode-btn maintenance ${maintenanceMode ? "active" : ""}`}
+                onClick={() => handleToggleMode(true)}
+                disabled={modeLoading}
+              >
+                Maintenance
+              </button>
+            </div>
+          </div>
+
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="filters">
         <select
           value={form.course}
-          onChange={(e) =>
-            setForm({ ...form, course: e.target.value, semester: 1 })
-          }
+          onChange={(e) => setForm({ ...form, course: e.target.value, semester: 1 })}
         >
           <option value="BCA">BCA</option>
           <option value="MCA">MCA</option>
@@ -121,9 +163,7 @@ data.append("unit", form.unit);
 
         <select
           value={form.semester}
-          onChange={(e) =>
-            setForm({ ...form, semester: Number(e.target.value) })
-          }
+          onChange={(e) => setForm({ ...form, semester: Number(e.target.value) })}
         >
           {[...Array(semesterCount)].map((_, i) => (
             <option key={i} value={i + 1}>
@@ -138,38 +178,30 @@ data.append("unit", form.unit);
           <input
             placeholder="PdfName"
             required
-            onChange={(e) =>
-              setForm({ ...form, title: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
           />
           <input
             placeholder="Subject"
             required
-            onChange={(e) =>
-              setForm({ ...form, subject: e.target.value })
-            }
+            onChange={(e) => setForm({ ...form, subject: e.target.value })}
           />
           <select
-  value={form.unit}
-  onChange={(e) =>
-    setForm({ ...form, unit: Number(e.target.value) })
-  }
-  required
->
-  <option value={1}>Unit 1</option>
-  <option value={2}>Unit 2</option>
-  <option value={3}>Unit 3</option>
-  <option value={4}>Unit 4</option>
-  <option value={5}>Unit 5</option>
-</select>
+            value={form.unit}
+            onChange={(e) => setForm({ ...form, unit: Number(e.target.value) })}
+            required
+          >
+            <option value={1}>Unit 1</option>
+            <option value={2}>Unit 2</option>
+            <option value={3}>Unit 3</option>
+            <option value={4}>Unit 4</option>
+            <option value={5}>Unit 5</option>
+          </select>
 
           <input
             type="file"
             accept="application/pdf"
             required
-            onChange={(e) =>
-              setForm({ ...form, pdf: e.target.files[0] })
-            }
+            onChange={(e) => setForm({ ...form, pdf: e.target.files[0] })}
           />
           <button type="submit">Upload</button>
         </form>
@@ -183,13 +215,11 @@ data.append("unit", form.unit);
       />
 
       <h3>
-        {form.course} – Semester {form.semester}
+        {form.course} - Semester {form.semester}
       </h3>
 
       {pdfs
-        .filter((p) =>
-          p.subject.toLowerCase().includes(search.toLowerCase())
-        )
+        .filter((p) => p.subject.toLowerCase().includes(search.toLowerCase()))
         .map((pdf) => (
           <div key={pdf._id} className="pdf-card">
             <div>
@@ -204,9 +234,7 @@ data.append("unit", form.unit);
               >
                 <button>Preview</button>
               </a>
-              <button onClick={() => deletePdf(pdf._id)}>
-                Delete
-              </button>
+              <button onClick={() => deletePdf(pdf._id)}>Delete</button>
             </div>
           </div>
         ))}
