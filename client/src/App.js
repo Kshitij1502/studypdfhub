@@ -22,8 +22,15 @@ import API from "./services/api";
 import SYSTEM_API from "./services/systemApi";
 import "./styles/theme.css";
 
-const FORCE_MAINTENANCE_UNTIL = "2026-04-07T23:59:59+05:30";
-const FORCE_MAINTENANCE_MODE = Date.now() < new Date(FORCE_MAINTENANCE_UNTIL).getTime();
+const getForceMaintenanceMode = () => {
+  const forceUntil = String(process.env.REACT_APP_FORCE_MAINTENANCE_UNTIL || "").trim();
+  if (!forceUntil) return false;
+
+  const targetTime = new Date(forceUntil).getTime();
+  if (Number.isNaN(targetTime)) return false;
+
+  return Date.now() < targetTime;
+};
 
 const AppContent = ({ darkMode, setDarkMode }) => {
   const location = useLocation();
@@ -34,7 +41,9 @@ const AppContent = ({ darkMode, setDarkMode }) => {
   const [healthCheckDone, setHealthCheckDone] = useState(false);
 
   useEffect(() => {
-    if (FORCE_MAINTENANCE_MODE && !isAdminRoute) {
+    const forceMaintenanceMode = getForceMaintenanceMode();
+
+    if (forceMaintenanceMode && !isAdminRoute) {
       setIsBackendHealthy(false);
       setIsMaintenanceMode(true);
       setHealthCheckDone(true);
@@ -74,7 +83,9 @@ const AppContent = ({ darkMode, setDarkMode }) => {
     };
   }, [isAdminRoute]);
 
-  if (FORCE_MAINTENANCE_MODE && !isAdminRoute) {
+  const forceMaintenanceMode = getForceMaintenanceMode();
+
+  if (forceMaintenanceMode && !isAdminRoute) {
     return <MaintenancePage />;
   }
 
