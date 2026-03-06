@@ -118,7 +118,7 @@ const atlasRequest = async (env, action, payload) => {
   const config = getAtlasConfig(env);
 
   if (!config.baseUrl || !config.apiKey) {
-    throw new Error("Atlas Data API is not configured");
+    throw new Error("Atlas Data API is not configured. Set ATLAS_DATA_API_URL and ATLAS_DATA_API_KEY in Worker secrets.");
   }
 
   const res = await fetch(`${config.baseUrl}/action/${action}`, {
@@ -130,13 +130,25 @@ const atlasRequest = async (env, action, payload) => {
     body: JSON.stringify(payload)
   });
 
-  const json = await res.json();
+  const raw = await res.text();
+  let json = null;
 
-  if (!res.ok || json.error) {
-    throw new Error(json.error || json.error_message || `Atlas ${action} failed`);
+  try {
+    json = raw ? JSON.parse(raw) : {};
+  } catch {
+    json = null;
   }
 
-  return json;
+  if (!res.ok) {
+    const details = json?.error || json?.error_message || raw || `HTTP ${res.status}`;
+    throw new Error(`Atlas ${action} failed: ${details}`);
+  }
+
+  if (json?.error || json?.error_message) {
+    throw new Error(`Atlas ${action} failed: ${json.error || json.error_message}`);
+  }
+
+  return json || {};
 };
 
 const normalizeId = (doc) => {
@@ -252,6 +264,10 @@ app.post("/api/admin/login", async (c) => {
 
     if (!normalizedEmail || !normalizedPassword) {
       return c.json({ message: "Email and password are required" }, 400);
+    }
+
+    if (!c.env.JWT_SECRET) {
+      return c.json({ message: "JWT_SECRET is not configured in Worker secrets" }, 500);
     }
 
     const cfg = getAtlasConfig(c.env);
@@ -466,3 +482,5 @@ app.delete("/api/pdfs/:id", requireAdmin, async (c) => {
 });
 
 export default app;
+
+

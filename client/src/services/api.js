@@ -1,10 +1,18 @@
 import axios from "axios";
 
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL ||
-  (window.location.hostname === "localhost"
+const normalizeApiBase = (value, fallback) => {
+  const raw = String(value || "").trim();
+  const base = raw || fallback;
+  const cleaned = base.replace(/\/+$/, "");
+  return cleaned.endsWith("/api") ? cleaned : `${cleaned}/api`;
+};
+
+const API_BASE_URL = normalizeApiBase(
+  process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_API_URL,
+  window.location.hostname === "localhost"
     ? "http://localhost:5000/api"
-    : "https://studypdfhub-api.patelkshitij1502.workers.dev/api");
+    : "https://studypdfhub-api.patelkshitij1502.workers.dev/api"
+);
 
 const API = axios.create({
   baseURL: API_BASE_URL

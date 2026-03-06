@@ -49,6 +49,8 @@ const AdminLogin = () => {
         setMessage("Backend is unreachable. Please try again once server is live.");
       } else if (err.response.status === 401) {
         setMessage("Invalid admin credentials.");
+      } else if (err.response?.data?.message) {
+        setMessage(String(err.response.data.message));
       } else {
         setMessage("Login failed. Please try again.");
       }
@@ -109,3 +111,5 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
+
+
