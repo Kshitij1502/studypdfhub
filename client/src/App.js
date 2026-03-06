@@ -19,6 +19,7 @@ import MaintenancePage from "./pages/MaintenancePage";
 import Footer from "./components/Footer";
 
 import API from "./services/api";
+import SYSTEM_API from "./services/systemApi";
 import "./styles/theme.css";
 
 const AppContent = ({ darkMode, setDarkMode }) => {
@@ -33,23 +34,25 @@ const AppContent = ({ darkMode, setDarkMode }) => {
     let isMounted = true;
 
     const checkSystemStatus = async () => {
-      try {
-        const res = await API.get("/system/status", { timeout: 5000 });
+      const [systemStatusResult, backendHealthResult] = await Promise.allSettled([
+        SYSTEM_API.get("/system/status", { timeout: 5000 }),
+        API.get("/health", { timeout: 5000 })
+      ]);
 
-        if (isMounted) {
-          setIsBackendHealthy(true);
-          setIsMaintenanceMode(Boolean(res.data?.maintenanceMode));
-        }
-      } catch (error) {
-        if (isMounted) {
-          setIsBackendHealthy(false);
-          setIsMaintenanceMode(true);
-        }
-      } finally {
-        if (isMounted) {
-          setHealthCheckDone(true);
-        }
+      if (!isMounted) {
+        return;
       }
+
+      setIsBackendHealthy(backendHealthResult.status === "fulfilled");
+
+      if (systemStatusResult.status === "fulfilled") {
+        setIsMaintenanceMode(Boolean(systemStatusResult.value.data?.maintenanceMode));
+      } else {
+        // If Worker status endpoint fails, fall back to maintenance for safety.
+        setIsMaintenanceMode(true);
+      }
+
+      setHealthCheckDone(true);
     };
 
     checkSystemStatus();
