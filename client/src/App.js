@@ -53,9 +53,19 @@ const AppContent = ({ darkMode, setDarkMode }) => {
     let isMounted = true;
 
     const checkSystemStatus = async () => {
+      const requestConfig = {
+        timeout: 5000,
+        params: { t: Date.now() },
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0"
+        }
+      };
+
       const [systemStatusResult, backendHealthResult] = await Promise.allSettled([
-        SYSTEM_API.get("/system/status", { timeout: 5000 }),
-        API.get("/health", { timeout: 5000 })
+        SYSTEM_API.get("/system/status", requestConfig),
+        API.get("/health", requestConfig)
       ]);
 
       if (!isMounted) {
@@ -76,10 +86,24 @@ const AppContent = ({ darkMode, setDarkMode }) => {
 
     checkSystemStatus();
     const intervalId = setInterval(checkSystemStatus, 30000);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        checkSystemStatus();
+      }
+    };
+    const onFocus = () => checkSystemStatus();
+    const onPageShow = () => checkSystemStatus();
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("pageshow", onPageShow);
 
     return () => {
       isMounted = false;
       clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("pageshow", onPageShow);
     };
   }, [isAdminRoute]);
 
