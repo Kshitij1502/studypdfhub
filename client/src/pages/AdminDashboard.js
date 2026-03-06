@@ -20,6 +20,14 @@ const AdminDashboard = () => {
     pdf: null
   });
 
+  const apiOrigin = (API.defaults.baseURL || "").replace(/\/api\/?$/, "");
+
+  const resolveFileUrl = (fileUrl) => {
+    if (!fileUrl) return "#";
+    if (/^https?:\/\//i.test(fileUrl)) return fileUrl;
+    return `${apiOrigin}/${String(fileUrl).replace(/^\/+/, "")}`;
+  };
+
   const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
     navigate("/admin/login");
@@ -227,11 +235,7 @@ const AdminDashboard = () => {
               <div>{pdf.subject}</div>
             </div>
             <div>
-              <a
-                href={`https://studypdfhub-production.up.railway.app/${pdf.fileUrl}`}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={resolveFileUrl(pdf.fileUrl)} target="_blank" rel="noreferrer">
                 <button>Preview</button>
               </a>
               <button onClick={() => deletePdf(pdf._id)}>Delete</button>
